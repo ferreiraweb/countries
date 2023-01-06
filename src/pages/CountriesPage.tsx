@@ -2,18 +2,19 @@ import { useState } from "react";
 import Header from "../components/Header";
 import Main from "../components/Main";
 import TextInput from "../components/TextInput";
-import ICountry from "../interfaces/ICountry";
 
+import Countries from "../components/Countries";
+import Country from "../components/Country";
 import { allCountries } from "../data/countries";
 
 export default function CountriesPage() {
-  const [countryFilter, setCountryFilter] = useState("Brazil");
+  const [countryFilter, setCountryFilter] = useState("unit");
 
   function handleInputCountryOnChange(e: any) {
     setCountryFilter(e.currentTarget.value);
   }
 
-  const countryFilterLowerCase = countryFilter.toLowerCase(); // evitar fazer este processamento dentro do filter
+  const countryFilterLowerCase = countryFilter.trim().toLowerCase(); // evitar fazer este processamento dentro do filter
 
   const filteredCountry =
     countryFilter.length > 2
@@ -22,13 +23,11 @@ export default function CountriesPage() {
         )
       : [];
 
-  console.log(filteredCountry);
-
   /* --------------------------------------------------- */
 
   return (
     <>
-      <Header>Countries 2</Header>
+      <Header>Countries 3</Header>
       <Main>
         <div className="w-2/3">
           <TextInput
@@ -40,9 +39,19 @@ export default function CountriesPage() {
         </div>
       </Main>
 
-      {filteredCountry.map((country) => (
-        <p key={country.id}>{country.name}</p>
-      ))}
+      {/* aplicação do conceito de composition (prop children) 
+          que evita o problema conhecido como prop drilling
+      */}
+      <Countries>
+        <div className="border p-2">
+          <p className=" font-semibold text-center mb-3">
+            Total Países: {filteredCountry.length}
+          </p>
+          {filteredCountry.map((country) => (
+            <Country key={country.id}>{country}</Country>
+          ))}
+        </div>
+      </Countries>
     </>
   );
 }
